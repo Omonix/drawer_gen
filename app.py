@@ -1,14 +1,15 @@
 from tkinter import *
 from tkinter import filedialog as fd
-from tkinter.messagebox import showinfo, showerror, showwarning
+from tkinter.messagebox import showinfo, showwarning
 import time
 from PIL import Image
 import urllib.request
 import math
 
-def lb_preshot_img(have_file):
+def lb_preshot_img(have_filer):
+    global have_file
     if urler.get() != '':
-        if have_file == False:
+        if have_filer == False:
             urllib.request.urlretrieve(urler.get(), './temp/before.jpg')
             imag = Image.open('./temp/before.jpg')
             old_resolution.set(f'{imag.size[0]}x{imag.size[1]}')
@@ -33,7 +34,7 @@ def lb_get_res():
         return old_resolution.get().split('x')
     else:
         return new_resolution.get().split('x')
-def lb_draw_img(url='./temp/before.jpg'):
+def lb_draw_img(url):
     new_res = lb_get_res()
     name = name_file.get()
     origin_img = Image.open(url)
@@ -58,10 +59,10 @@ def lb_draw_img(url='./temp/before.jpg'):
     origin_img.close()
     showinfo(title='Successfully !', message=f'Finished in {math.floor(minu)}min {math.floor(minu % 1 * 60)}sec {math.floor(after % 1 * 1000)}ms')
     print(f'\033[33m{math.floor(minu)}min', f'{math.floor(minu % 1 * 60)}sec', f'{math.floor(after % 1 * 1000)}ms\033[0m')
-def lb_submit():
+def lb_submit(url):
     global bg_color
     if old_resolution.get() != '' and name_file.get() != '':
-        lb_draw_img()
+        lb_draw_img(url)
         old_resolution.set('')
         new_resolution.set('')
         name_file.set('')
@@ -73,9 +74,11 @@ def lb_change_palette():
     palette = listColor[int(choose_palette.get())]
 def lb_open_file():
     global have_file
+    global have_url
     file_url = fd.askopenfilename(filetypes=[('JPEG (*.jpg)', '*.jpg'), ('PNG (*.png)', '*.png'), ('ICO (*.ico)', '*.ico'), ('All files', '*.*')])
     urler.set(file_url)
     have_file = True
+    have_url = file_url
 def lb_quit():
     screen.destroy()
     screen.quit()
@@ -100,6 +103,7 @@ new_resolution = StringVar()
 old_resolution = StringVar()
 name_file = StringVar()
 have_file = False
+have_url = './temp/before.jpg'
 palette = listColor[0]
 choose_palette = StringVar()
 menu_file.add_command(label='Open file', command=lb_open_file)
@@ -111,7 +115,7 @@ menu_palette.add_radiobutton(label='Paint', value=2, variable=choose_palette, co
 
 url_txt = Label(screen, text='URL :', font=(20), fg='white', bg='#191919').place(x='10', y='10')
 url_put = Entry(screen, textvariable=urler).place(x='70', y='15', width='250')
-load = Button(screen, text='Load image', fg='white', bg='#191919', command= lambda : lb_preshot_img(have_file=have_file)).place(x='325', y='12.5')
+load = Button(screen, text='Load image', fg='white', bg='#191919', command=lambda: lb_preshot_img(have_file)).place(x='325', y='12.5')
 res_txt = Label(screen, text='RES :', font=(20), fg='white', bg='#191919').place(x='10', y='40')
 resolution_origin = Label(screen, textvariable=old_resolution, font=(20), fg='white', bg='#191919').place(x='70', y='40')
 arrow = Label(screen, text='>', font=(20), fg='white', bg='#191919').place(x='170', y='40')
@@ -119,7 +123,7 @@ resolution_new = Entry(screen, textvariable=new_resolution).place(x='210', y='45
 name_txt = Label(screen, text='NAME :', font=(20), fg='white', bg='#191919').place(x='10', y='70')
 name_put = Entry(screen, textvariable=name_file).place(x='90', y='75')
 
-button = Button(screen, text='Submit', font=(10), fg='white', bg='#191919', command=lb_submit).place(relx='0.5', rely='0.9', anchor=CENTER)
+button = Button(screen, text='Submit', font=(10), fg='white', bg='#191919', command=lambda: lb_submit(have_url)).place(relx='0.5', rely='0.9', anchor=CENTER)
 
 screen.config(menu=menu_bar)
 screen.mainloop()
