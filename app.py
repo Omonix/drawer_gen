@@ -79,8 +79,6 @@ def lb_open_file():
 def lb_quit():
     screen.destroy()
     screen.quit()
-def lb_get_url():
-    print('ok')
 
 screen = Tk()
 screen.geometry('400x400')
@@ -96,7 +94,7 @@ menu_bar.add_cascade(label='File', menu=menu_file)
 menu_bar.add_cascade(label='Palette', menu=menu_palette)
 menu_bar.add_cascade(label='Help', menu=menu_help)
 
-listColor = [[(0, 0, 0), (255, 255, 255), (102, 102, 102), (0, 80, 205), (255, 255, 255), (170, 170 ,170), (36, 201, 255), (2, 116, 31), (152, 0, 0), (149, 65, 19), (15, 176, 60), (255, 0, 21), (255, 120, 39), (176, 112, 24), (155, 0, 80), (203, 89, 86), (254, 193, 40), (255, 1, 142), (254, 175, 167)], [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 0, 125), (255, 125, 0), (125, 255, 0), (0, 255, 125), (0, 125, 255), (125, 0, 255)]]
+listColor = [[(0, 0, 0), (255, 255, 255), (102, 102, 102), (0, 80, 205), (255, 255, 255), (170, 170 ,170), (36, 201, 255), (2, 116, 31), (152, 0, 0), (149, 65, 19), (15, 176, 60), (255, 0, 21), (255, 120, 39), (176, 112, 24), (155, 0, 80), (203, 89, 86), (254, 193, 40), (255, 1, 142), (254, 175, 167)], [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 0, 125), (255, 125, 0), (125, 255, 0), (0, 255, 125), (0, 125, 255), (125, 0, 255)], [(0, 0, 0), (255, 255, 255), (127, 127, 127), (136, 0, 21), (237, 28, 36), (255, 127, 39), (255, 242, 0), (34, 177, 76), (0, 162, 232), (63, 72, 204), (163, 73, 164), (195, 195, 195), (185, 122, 87), (255, 174, 201), (255, 201, 14), (239, 228, 176), (181, 230, 29), (153, 217, 234), (112, 146, 190), (200, 191, 231)]]
 urler = StringVar()
 new_resolution = StringVar()
 old_resolution = StringVar()
@@ -108,16 +106,16 @@ menu_file.add_command(label='Open file', command=lb_open_file)
 menu_file.add_separator()
 menu_file.add_command(label='Exit', command=lb_quit)
 menu_palette.add_radiobutton(label='Gartic Phone', value=0, variable=choose_palette, command=lb_change_palette)
-menu_palette.add_radiobutton(label='Paint', value=1, variable=choose_palette, command=lb_change_palette)
-
+menu_palette.add_radiobutton(label='Basic', value=1, variable=choose_palette, command=lb_change_palette)
+menu_palette.add_radiobutton(label='Paint', value=2, variable=choose_palette, command=lb_change_palette)
 
 url_txt = Label(screen, text='URL :', font=(20), fg='white', bg='#191919').place(x='10', y='10')
 url_put = Entry(screen, textvariable=urler).place(x='70', y='15', width='250')
 load = Button(screen, text='Load image', fg='white', bg='#191919', command= lambda : lb_preshot_img(have_file=have_file)).place(x='325', y='12.5')
 res_txt = Label(screen, text='RES :', font=(20), fg='white', bg='#191919').place(x='10', y='40')
 resolution_origin = Label(screen, textvariable=old_resolution, font=(20), fg='white', bg='#191919').place(x='70', y='40')
-arrow = Label(screen, text='>', font=(20), fg='white', bg='#191919').place(x='150', y='40')
-resolution_new = Entry(screen, textvariable=new_resolution).place(x='180', y='45', width='70')
+arrow = Label(screen, text='>', font=(20), fg='white', bg='#191919').place(x='170', y='40')
+resolution_new = Entry(screen, textvariable=new_resolution).place(x='210', y='45', width='70')
 name_txt = Label(screen, text='NAME :', font=(20), fg='white', bg='#191919').place(x='10', y='70')
 name_put = Entry(screen, textvariable=name_file).place(x='90', y='75')
 
