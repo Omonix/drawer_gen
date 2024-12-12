@@ -5,6 +5,7 @@ import time
 from PIL import Image
 import urllib.request
 import math
+import webbrowser
 
 def lb_preshot_img(have_filer):
     global have_file
@@ -82,6 +83,9 @@ def lb_open_file():
 def lb_quit():
     screen.destroy()
     screen.quit()
+def lb_contact(contact):
+    tab_contact = ['https://github.com/Omonix', 'https://www.instagram.com/omonyx_sama/']
+    webbrowser.open(tab_contact[contact])
 
 screen = Tk()
 screen.geometry('400x400')
@@ -92,10 +96,10 @@ screen.resizable(height=False, width=False)
 menu_bar = Menu(screen)
 menu_file = Menu(menu_bar, tearoff=0, bg='#ffffff', fg='#191919', activebackground='#191919', activeforeground='#ffffff')
 menu_palette = Menu(menu_bar, tearoff=0, bg='#ffffff', fg='#191919', activebackground='#191919', activeforeground='#ffffff')
-menu_help = Menu(menu_bar, tearoff=0, bg='#ffffff', fg='#191919', activebackground='#191919', activeforeground='#ffffff')
+menu_contact = Menu(menu_bar, tearoff=0, bg='#ffffff', fg='#191919', activebackground='#191919', activeforeground='#ffffff')
 menu_bar.add_cascade(label='File', menu=menu_file)
 menu_bar.add_cascade(label='Palette', menu=menu_palette)
-menu_bar.add_cascade(label='Help', menu=menu_help)
+menu_bar.add_cascade(label='Contact', menu=menu_contact)
 
 listColor = [[(0, 0, 0), (255, 255, 255), (102, 102, 102), (0, 80, 205), (255, 255, 255), (170, 170 ,170), (36, 201, 255), (2, 116, 31), (152, 0, 0), (149, 65, 19), (15, 176, 60), (255, 0, 21), (255, 120, 39), (176, 112, 24), (155, 0, 80), (203, 89, 86), (254, 193, 40), (255, 1, 142), (254, 175, 167)], [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 0, 125), (255, 125, 0), (125, 255, 0), (0, 255, 125), (0, 125, 255), (125, 0, 255)], [(0, 0, 0), (255, 255, 255), (127, 127, 127), (136, 0, 21), (237, 28, 36), (255, 127, 39), (255, 242, 0), (34, 177, 76), (0, 162, 232), (63, 72, 204), (163, 73, 164), (195, 195, 195), (185, 122, 87), (255, 174, 201), (255, 201, 14), (239, 228, 176), (181, 230, 29), (153, 217, 234), (112, 146, 190), (200, 191, 231)]]
 urler = StringVar()
@@ -112,6 +116,8 @@ menu_file.add_command(label='Exit', command=lb_quit)
 menu_palette.add_radiobutton(label='Gartic Phone', value=0, variable=choose_palette, command=lb_change_palette)
 menu_palette.add_radiobutton(label='Basic', value=1, variable=choose_palette, command=lb_change_palette)
 menu_palette.add_radiobutton(label='Paint', value=2, variable=choose_palette, command=lb_change_palette)
+menu_contact.add_command(label='Github', command=lambda: lb_contact(0))
+menu_contact.add_command(label='Instagram', command=lambda: lb_contact(1))
 
 url_txt = Label(screen, text='URL :', font=(20), fg='white', bg='#191919').place(x='10', y='10')
 url_put = Entry(screen, textvariable=urler).place(x='70', y='15', width='250')
