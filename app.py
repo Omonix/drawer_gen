@@ -9,6 +9,20 @@ import webbrowser
 
 def lb_upper(text):
     return text[0].upper() + text[1:].lower()
+def lb_hexa_to_rgb (hexa):
+  r = int(hexa[1:3], 16)
+  g = int(hexa[3:5], 16)
+  b = int(hexa[5:], 16)
+  return (r, g, b)
+def lb_rgb_to_hexa(rgb):
+    color = f'#{hex(rgb[0])[2:]}{hex(rgb[1])[2:]}{hex(rgb[2])[2:]}'
+    if len(color) != 7:
+        correct = ''
+        for i in range(7 - len(color)):
+            correct += '0'
+        return color + correct
+    else:
+        return color
 def lb_preshot_img(have_filer):
     global have_file
     if urler.get() != '':
@@ -74,7 +88,8 @@ def lb_submit(url):
         print('\033[31mError : missing arg !\033[0m')
 def lb_change_palette():
     global palette
-    palette = listColor[int(choose_palette.get())]['colors']
+    if listColor[int(choose_palette.get())]['name'] != 'None':
+        palette = listColor[int(choose_palette.get())]['colors']
 def lb_open_file():
     global have_file
     global have_url
@@ -124,23 +139,30 @@ def lb_create_childScreen(name, xy, parent):
 def lb_palette_handler():
     global listColor
     manager = lb_create_childScreen('Manage palette', '850x400', screen)
-    manager.resizable(height=True, width=True)
-    Button(manager, text='Add palette', fg='white', bg='#191919', command=lambda: lb_new_palette(manager, len(listColor))).place(x='10', y='10')
+    manager.resizable(width=True, height=True)
+    for i in range(len(listColor)):
+        lb_show_palette(manager, i)
+    Button(manager, text='Save', fg='white', bg='#191919', command=lb_refresh_palette).place(x='10', y='360')
     screen.wait_window(manager)
-def lb_new_palette(fen, num):
-    name = lb_create_childScreen('Palette name', '200x150', fen)
-    tset = StringVar()
-    Label(name, text='New palette : ', fg='white', bg='#191919').place(x='75', y='50')
-    Entry(name, textvariable=tset).place(x='50', y='75')
-    Button(name, text='Create', fg='white', bg='#191919', command=lambda: name.destroy()).place(x='75', y='100')
-    fen.wait_window(name)
-    Label(fen, text=lb_upper(tset.get()), fg='white', bg='#191919').place(x=num * 75 - 130, y='10')
-    listColor.append({'name': lb_upper(tset.get()), 'colors': []})
-    Button(fen, text='Add color', fg='white', bg='#191919', command=lambda: lb_new_color(fen, num)).place(x=num * 75 - 130, y='30', width='70')
+def lb_show_palette(fen, num):
+    Label(fen, text=listColor[num]['name'], fg='white', bg='#191919').place(x=num * 80 + 30, y='10')
+    listColor.append({'name': listColor[num]['name'], 'colors': []})
+    Button(fen, text='Add color', fg='white', bg='#191919', command=lambda: lb_new_color(fen, num)).place(x=num * 80 + 30, y='30', width='70')
+    for j in range(len(listColor[num]['colors'])):
+        Label(fen, text=f'Color {j + 1}', fg='black', bg=lb_rgb_to_hexa(listColor[num]['colors'][j])).place(x=num * 80 + 30, y=j * 20 + 60)
 def lb_new_color(fen, num):
-    test = StringVar()
-    Entry(fen, textvariable=test).place(x=num * 75 - 130, y=len(listColor[num]['colors']) * 20 + 60, width='70')
-    listColor[num]['colors'].append('re')
+    new_color = StringVar()
+    color = lb_create_childScreen(f'{listColor[num]['name']}/Color {len(listColor[num]['colors']) + 1}', '200x150', fen)
+    Entry(color, textvariable=new_color).pack()
+    Button(color, text='Add color', fg='white', bg='#191919', command=lambda: color.destroy()).pack()
+    fen.wait_window(color)
+    Label(fen, text=f'Color {len(listColor[num]['colors']) + 1}', fg='black', bg=new_color.get()).place(x=num * 80 + 30, y=len(listColor[num]['colors']) * 20 + 60)
+    listColor[num]['colors'].append(lb_hexa_to_rgb(new_color.get()))
+def lb_refresh_palette():
+    for i in range(len(listColor)):
+        menu_palette.delete(i)
+        menu_palette.add_radiobutton(label=listColor[i]['name'], value=i, variable=choose_palette, command=lb_change_palette)
+
 
 screen = Tk()
 screen.geometry('400x400')
@@ -167,7 +189,7 @@ menu_bar.add_cascade(label='File', menu=menu_file)
 menu_bar.add_cascade(label='Palette', menu=menu_palette)
 menu_bar.add_cascade(label='Contact', menu=menu_contact)
 
-listColor = [{'name' : 'Gartic phone', 'colors' : [(0, 0, 0), (255, 255, 255), (102, 102, 102), (0, 80, 205), (255, 255, 255), (170, 170 ,170), (36, 201, 255), (2, 116, 31), (152, 0, 0), (149, 65, 19), (15, 176, 60), (255, 0, 21), (255, 120, 39), (176, 112, 24), (155, 0, 80), (203, 89, 86), (254, 193, 40), (255, 1, 142), (254, 175, 167)]}, {'name' : 'Basic', 'colors' : [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 0, 125), (255, 125, 0), (125, 255, 0), (0, 255, 125), (0, 125, 255), (125, 0, 255)]}, {'name' : 'Paint', 'colors' : [(0, 0, 0), (255, 255, 255), (127, 127, 127), (136, 0, 21), (237, 28, 36), (255, 127, 39), (255, 242, 0), (34, 177, 76), (0, 162, 232), (63, 72, 204), (163, 73, 164), (195, 195, 195), (185, 122, 87), (255, 174, 201), (255, 201, 14), (239, 228, 176), (181, 230, 29), (153, 217, 234), (112, 146, 190), (200, 191, 231)]}]
+listColor = [{'name' : 'Gartic phone', 'colors' : [(0, 0, 0), (255, 255, 255), (102, 102, 102), (0, 80, 205), (255, 255, 255), (170, 170 ,170), (36, 201, 255), (2, 116, 31), (152, 0, 0), (149, 65, 19), (15, 176, 60), (255, 0, 21), (255, 120, 39), (176, 112, 24), (155, 0, 80), (203, 89, 86), (254, 193, 40), (255, 1, 142), (254, 175, 167)]}, {'name' : 'Basic', 'colors' : [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 0, 125), (255, 125, 0), (125, 255, 0), (0, 255, 125), (0, 125, 255), (125, 0, 255)]}, {'name' : 'Paint', 'colors' : [(0, 0, 0), (255, 255, 255), (127, 127, 127), (136, 0, 21), (237, 28, 36), (255, 127, 39), (255, 242, 0), (34, 177, 76), (0, 162, 232), (63, 72, 204), (163, 73, 164), (195, 195, 195), (185, 122, 87), (255, 174, 201), (255, 201, 14), (239, 228, 176), (181, 230, 29), (153, 217, 234), (112, 146, 190), (200, 191, 231)]}, {'name': 'None', 'colors': []}, {'name': 'None', 'colors': []}, {'name': 'None', 'colors': []}, {'name': 'None', 'colors': []}, {'name': 'None', 'colors': []}, {'name': 'None', 'colors': []}, {'name': 'None', 'colors': []}]
 urler = StringVar()
 new_resolution = StringVar()
 old_resolution = StringVar()
@@ -181,9 +203,7 @@ menu_file.add_separator()
 menu_file.add_command(label='Manage palettes', command=lb_palette_handler)
 menu_file.add_separator()
 menu_file.add_command(label='Exit', command=lb_quit)
-menu_palette.add_radiobutton(label=listColor[0]['name'], value=0, variable=choose_palette, command=lb_change_palette)
-menu_palette.add_radiobutton(label=listColor[1]['name'], value=1, variable=choose_palette, command=lb_change_palette)
-menu_palette.add_radiobutton(label=listColor[2]['name'], value=2, variable=choose_palette, command=lb_change_palette)
+lb_refresh_palette()
 menu_contact.add_command(label='Github', command=lambda: lb_contact(0))
 menu_contact.add_command(label='Instagram', command=lambda: lb_contact(1))
 
