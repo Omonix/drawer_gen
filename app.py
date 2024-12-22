@@ -63,12 +63,12 @@ def lb_draw_img(url):
         for j in range(new_height):
             pix = origin_img.getpixel((i * (old_width / new_width), j * (old_height / new_height)))
             mini = {'dif': 255, 'id': 0}
-            for k in range(len(palette)):
-                difference = abs(pix[0] - palette[k][0]) + abs(pix[1] - palette[k][1]) + abs(pix[2] - palette[k][2])
+            for k in range(len(palette['colors'])):
+                difference = abs(pix[0] - palette['colors'][k][0]) + abs(pix[1] - palette['colors'][k][1]) + abs(pix[2] - palette['colors'][k][2])
                 if difference < mini['dif']:
                     mini['id'] = k
                     mini['dif'] = difference
-            new_img.putpixel((i, j), palette[mini['id']])
+            new_img.putpixel((i, j), palette['colors'][mini['id']])
     new_img.save(f'./archive/{name}.jpg')
     new_img.close()
     after = time.time() - before
@@ -89,7 +89,7 @@ def lb_submit(url):
 def lb_change_palette():
     global palette
     if listColor[int(choose_palette.get())]['name'] != 'None':
-        palette = listColor[int(choose_palette.get())]['colors']
+        palette = listColor[int(choose_palette.get())]
 def lb_open_file():
     global have_file
     global have_url
@@ -146,7 +146,6 @@ def lb_palette_handler():
     screen.wait_window(manager)
 def lb_show_palette(fen, num):
     Label(fen, text=listColor[num]['name'], fg='white', bg='#191919').place(x=num * 80 + 30, y='10')
-    listColor.append({'name': listColor[num]['name'], 'colors': []})
     Button(fen, text='Add color', fg='white', bg='#191919', command=lambda: lb_new_color(fen, num)).place(x=num * 80 + 30, y='30', width='70')
     for j in range(len(listColor[num]['colors'])):
         Label(fen, text=f'Color {j + 1}', fg='black', bg=lb_rgb_to_hexa(listColor[num]['colors'][j])).place(x=num * 80 + 30, y=j * 20 + 60)
@@ -159,8 +158,9 @@ def lb_new_color(fen, num):
     Label(fen, text=f'Color {len(listColor[num]['colors']) + 1}', fg='black', bg=new_color.get()).place(x=num * 80 + 30, y=len(listColor[num]['colors']) * 20 + 60)
     listColor[num]['colors'].append(lb_hexa_to_rgb(new_color.get()))
 def lb_refresh_palette():
+    for j in range(len(listColor)):
+        menu_palette.delete(0)
     for i in range(len(listColor)):
-        menu_palette.delete(i)
         menu_palette.add_radiobutton(label=listColor[i]['name'], value=i, variable=choose_palette, command=lb_change_palette)
 
 
