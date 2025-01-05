@@ -23,20 +23,23 @@ def lb_rgb_to_hexa(rgb):
         return color + correct
     else:
         return color
-def lb_preshot_img(have_filer):
-    global have_file
+def lb_preshot_img():
+    global img_file
     if urler.get() != '':
-        if have_filer == False:
+        if img_file['have'] == False:
             urllib.request.urlretrieve(urler.get(), './temp/before.jpg')
             imag = Image.open('./temp/before.jpg')
             old_resolution.set(f'{imag.size[0]}x{imag.size[1]}')
             imag.close()
+            img_file['url'] = './temp/before.jpg'
             urler.set('')
         else:
             imag = Image.open(urler.get())
             old_resolution.set(f'{imag.size[0]}x{imag.size[1]}')
             imag.close()
-        have_file = False
+            img_file['url'] = urler.get()
+            urler.set('')
+        img_file['have'] = False
         showinfo(title='Successfully !', message='Image load successfully !')
         print('\033[32mImage load successfully !\033[0m')
     else:
@@ -91,12 +94,11 @@ def lb_change_palette():
     if listColor[int(choose_palette.get())]['name'] != 'None':
         palette = listColor[int(choose_palette.get())]
 def lb_open_file():
-    global have_file
-    global have_url
+    global img_file
     file_url = fd.askopenfilename(filetypes=[('JPEG (*.jpg)', '*.jpg'), ('PNG (*.png)', '*.png'), ('ICO (*.ico)', '*.ico'), ('All files', '*.*')])
     urler.set(file_url)
-    have_file = True
-    have_url = file_url
+    img_file['have'] = True
+    img_file['url'] = file_url
 def lb_quit():
     screen.destroy()
     screen.quit()
@@ -194,8 +196,7 @@ urler = StringVar()
 new_resolution = StringVar()
 old_resolution = StringVar()
 name_file = StringVar()
-have_file = False
-have_url = './temp/before.jpg'
+img_file = {'url': './temp/before.jpg', 'have': False}
 palette = listColor[0]
 choose_palette = StringVar()
 menu_file.add_command(label='Open file', command=lb_open_file)
@@ -209,7 +210,7 @@ menu_contact.add_command(label='Instagram', command=lambda: lb_contact(1))
 
 url_txt = Label(screen, text='URL :', font=(20), fg='white', bg='#191919').place(x='10', y='10')
 url_put = Entry(screen, textvariable=urler).place(x='70', y='15', width='250')
-load = Button(screen, text='Load image', fg='white', bg='#191919', command=lambda: lb_preshot_img(have_file)).place(x='325', y='12.5')
+load = Button(screen, text='Load image', fg='white', bg='#191919', command=lambda: lb_preshot_img()).place(x='325', y='12.5')
 res_txt = Label(screen, text='RES :', font=(20), fg='white', bg='#191919').place(x='10', y='40')
 resolution_origin = Label(screen, textvariable=old_resolution, font=(20), fg='white', bg='#191919').place(x='70', y='40')
 arrow = Label(screen, text='>', font=(20), fg='white', bg='#191919').place(x='170', y='40')
@@ -217,7 +218,7 @@ resolution_new = Entry(screen, textvariable=new_resolution).place(x='210', y='45
 name_txt = Label(screen, text='NAME :', font=(20), fg='white', bg='#191919').place(x='10', y='70')
 name_put = Entry(screen, textvariable=name_file).place(x='90', y='75')
 
-button = Button(screen, text='Submit', font=(10), fg='white', bg='#191919', command=lambda: lb_submit(have_url)).place(relx='0.5', rely='0.9', anchor=CENTER)
+button = Button(screen, text='Submit', font=(10), fg='white', bg='#191919', command=lambda: lb_submit(img_file['url'])).place(relx='0.5', rely='0.9', anchor=CENTER)
 
 screen.config(menu=menu_bar)
 screen.mainloop()
