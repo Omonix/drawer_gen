@@ -15,14 +15,12 @@ def lb_hexa_to_rgb (hexa):
   b = int(hexa[5:], 16)
   return (r, g, b)
 def lb_rgb_to_hexa(rgb):
-    color = f'#{hex(rgb[0])[2:]}{hex(rgb[1])[2:]}{hex(rgb[2])[2:]}'
-    if len(color) != 7:
-        correct = ''
-        for i in range(7 - len(color)):
-            correct += '0'
-        return color + correct
-    else:
-        return color
+    color = ''
+    for i in range(3):
+        if rgb[i] == '0' or len(hex(rgb[i])[2:]) == 1:
+            color += '0'
+        color += hex(rgb[i])[2:]
+    return '#' + color
 def lb_preshot_img():
     global img_file
     if urler.get() != '':
@@ -150,7 +148,8 @@ def lb_show_palette(fen, num):
     Entry(fen, textvariable=listColor[num]['name'], fg='white', bg='#191919', border='0').place(x=num * 80 + 30, y='10', width='70')
     Button(fen, text='Add color', fg='white', bg='#191919', command=lambda: lb_new_color(fen, num)).place(x=num * 80 + 30, y='30', width='70')
     for j in range(len(listColor[num]['colors'])):
-        Label(fen, text=f'Color {j + 1}', fg='black', bg=lb_rgb_to_hexa(listColor[num]['colors'][j])).place(x=num * 80 + 30, y=j * 20 + 60)
+        color_hexa = lb_rgb_to_hexa(listColor[num]['colors'][j])
+        test = Button(fen, text=color_hexa, fg='black', bg=color_hexa, command=lambda: test['text']).place(x=num * 80 + 30, y=j * 25 + 60)
 def lb_new_color(fen, num):
     new_color = StringVar()
     color = lb_create_childScreen(f'{listColor[num]['name']}/Color {len(listColor[num]['colors']) + 1}', '200x150', fen)
@@ -191,7 +190,7 @@ menu_bar.add_cascade(label='File', menu=menu_file)
 menu_bar.add_cascade(label='Palette', menu=menu_palette)
 menu_bar.add_cascade(label='Contact', menu=menu_contact)
 
-listColor = [{'name' : StringVar(), 'colors' : [(0, 0, 0), (255, 255, 255), (102, 102, 102), (0, 80, 205), (255, 255, 255), (170, 170 ,170), (36, 201, 255), (2, 116, 31), (152, 0, 0), (149, 65, 19), (15, 176, 60), (255, 0, 21), (255, 120, 39), (176, 112, 24), (155, 0, 80), (203, 89, 86), (254, 193, 40), (255, 1, 142), (254, 175, 167)]}, {'name' : StringVar(), 'colors' : [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 0, 125), (255, 125, 0), (125, 255, 0), (0, 255, 125), (0, 125, 255), (125, 0, 255)]}, {'name' : StringVar(), 'colors' : [(0, 0, 0), (255, 255, 255), (127, 127, 127), (136, 0, 21), (237, 28, 36), (255, 127, 39), (255, 242, 0), (34, 177, 76), (0, 162, 232), (63, 72, 204), (163, 73, 164), (195, 195, 195), (185, 122, 87), (255, 174, 201), (255, 201, 14), (239, 228, 176), (181, 230, 29), (153, 217, 234), (112, 146, 190), (200, 191, 231)]}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}]
+listColor = [{'name' : StringVar(), 'colors' : [(0, 0, 0), (255, 255, 255), (102, 102, 102), (0, 80, 205), (170, 170 ,170), (36, 201, 255), (2, 116, 31), (152, 0, 0), (149, 65, 19), (15, 176, 60), (255, 0, 21), (255, 120, 39), (176, 112, 24), (155, 0, 80), (203, 89, 86), (254, 193, 40), (255, 1, 142), (254, 175, 167)]}, {'name' : StringVar(), 'colors' : [(0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255), (255, 0, 255), (255, 0, 125), (255, 125, 0), (125, 255, 0), (0, 255, 125), (0, 125, 255), (125, 0, 255)]}, {'name' : StringVar(), 'colors' : [(0, 0, 0), (255, 255, 255), (127, 127, 127), (136, 0, 21), (237, 28, 36), (255, 127, 39), (255, 242, 0), (34, 177, 76), (0, 162, 232), (63, 72, 204), (163, 73, 164), (195, 195, 195), (185, 122, 87), (255, 174, 201), (255, 201, 14), (239, 228, 176), (181, 230, 29), (153, 217, 234), (112, 146, 190), (200, 191, 231)]}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}, {'name': StringVar(), 'colors': []}]
 listColor[0]['name'].set('Gartic phone')
 listColor[1]['name'].set('Basic')
 listColor[2]['name'].set('Paint')
